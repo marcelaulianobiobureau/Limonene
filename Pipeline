@@ -5,4 +5,6 @@ apt-get install s3cmd
 s3cmd --configure
 s3cmd get s3://bioinfobiobureau/input/Pipergaudichaudia_S45_L008_R*_001.fastq.gz
 s3cmd get s3://bioinfobiobureau/input/Myrceugeniamyrcio_S46_L008_R*_001.fastq.gz
+s3cmd get s3://bioinfobiobureau/input/Sphagneticolatrilo_S44_L008_R*_001.fastq.gz
+
 
