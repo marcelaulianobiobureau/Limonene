@@ -15,7 +15,14 @@ wget https://github.com/trinityrnaseq/trinityrnaseq/releases
 cd trinityrnaseq-2.2.0
 make
 
+nohup /home/ubuntu/scripts/FastQC/./fastqc Myrceugeniamyrcio_S46_L008_R2_001.fastq.gz &
+nohup /home/ubuntu/scripts/FastQC/./fastqc Myrceugeniamyrcio_S46_L008_R1_001.fastq.gz &
+nohup /home/ubuntu/scripts/FastQC/./fastqc Sphagneticolatrilo_S44_L008_R2_001.fastq.gz &
+nohup /home/ubuntu/scripts/FastQC/./fastqc Sphagneticolatrilo_S44_L008_R1_001.fastq.gz &
 
+apt-get install bowtie
+
+nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Pipergaudichaudia_S45_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Pipergaudichaudia_S45_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_all
 
 
 
