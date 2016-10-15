@@ -23,6 +23,6 @@ nohup /home/ubuntu/scripts/FastQC/./fastqc Sphagneticolatrilo_S44_L008_R1_001.fa
 apt-get install bowtie
 
 nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Pipergaudichaudia_S45_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Pipergaudichaudia_S45_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_all
-
+nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Sphagneticolatrilo_S44_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Sphagneticolatrilo_S44_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_shpagneti/
 
 
