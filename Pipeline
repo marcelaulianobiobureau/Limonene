@@ -26,6 +26,14 @@ nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS
 nohup cdhit-est -i Trinity.piper.fasta -o Trinity.piper.fasta.cdhit100 -c 1.0 -T 3
 blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_Plant_Limonene_hydroxylases.fasta -o Trinity.piper100.Protein_Plant_Limonene_hydroxylases.blastx1e05 -e 1e-05
 
+#I'm going to run blastp in the output from cdhit splited in 3 files.
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.piper.fasta.cdhit100.1 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.cdhit100.1.uniprot.blastx1e05
+
+
+
+
 nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Sphagneticolatrilo_S44_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Sphagneticolatrilo_S44_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_shpagneti/
 nohup cdhit-est -i Trinity.sphag.fasta -o Trinity.sphag.fasta.cdhit100 -c 1.0 -T 3
 
