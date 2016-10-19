@@ -27,7 +27,7 @@ nohup cdhit-est -i Trinity.piper.fasta -o Trinity.piper.fasta.cdhit100 -c 1.0 -T
 blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_Plant_Limonene_hydroxylases.fasta -o Trinity.piper100.Protein_Plant_Limonene_hydroxylases.blastx1e05 -e 1e-05
 
 #I'm going to run blastx (with swissprot) in the output from cdhit splited in 3 files, in three different amazon instances for each species.
-
+#http://iubio.bio.indiana.edu/gmod/genogrid/scripts/split_multifasta.pl
 perl /home/bioma/scripts/split_multifasta.pl --input_file=Trinity.piper.fasta.cdhit100 --seqs_per_file=68978 --output_dir=.
 
 makeblastdb -in uniprot_sprot.fasta -dbtype prot
