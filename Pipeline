@@ -56,4 +56,8 @@ nohup blastx -query Trinity.sphag.fasta.cdhit100.3 -db uniprot_sprot.fasta -eval
 nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Myrceugeniamyrcio_S46_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Myrceugeniamyrcio_S46_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_Myrceu
 nohup cdhit-est -i Trinity.Myr.fasta -o Trinity.Myr.fasta.cdhit100 -c 1.0 -T 6
 
-
+nohup perl BLASTcov.pl Trinity.sphag.cdhit100.2.uniprot.blastx1e05 > Trinity.sphag.cdhit100.2.uniprot.blastx1e05.cov &
+nohup perl BLASTcov.pl Trinity.sphag.cdhit100.3.uniprot.blastx1e05 > Trinity.sphag.cdhit100.3.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05.cov
