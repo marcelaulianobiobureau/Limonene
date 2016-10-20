@@ -61,3 +61,13 @@ nohup perl BLASTcov.pl Trinity.sphag.cdhit100.3.uniprot.blastx1e05 > Trinity.sph
 nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05.cov
 nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05.cov
 nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05.cov
+
+#after running BLASTcov (that calculates % of query and subject coverage in the blast hit) I've downloaded all 3 pieces of results for piper and concatenated them.
+cat 
+
+#Now, I'm running a BLAST in one instance (i-b20687a4) with all piper trinity transcripts with a specific database made by JuAmerico.
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.piper.fasta.cdhit100 -db PF00067_full_length_sequences.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.fasta.cdhit100.PF00067blastx1e05
+#finally, localy I'll run with the bacterial db.
+blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_db_Bacterial_Limonene_Hydroxylase.fasta -o Trinity.piper.fasta.cdhit100.Bacterial_Limonene_Hydroxylase.blastx1e05 -e 1e-05 -m 8
