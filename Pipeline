@@ -56,18 +56,27 @@ nohup blastx -query Trinity.sphag.fasta.cdhit100.3 -db uniprot_sprot.fasta -eval
 nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Myrceugeniamyrcio_S46_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Myrceugeniamyrcio_S46_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_Myrceu
 nohup cdhit-est -i Trinity.Myr.fasta -o Trinity.Myr.fasta.cdhit100 -c 1.0 -T 6
 
+nohup perl BLASTcov.pl Trinity.sphag.cdhit100.1.uniprot.blastx1e05 > Trinity.sphag.cdhit100.1.uniprot.blastx1e05.cov
 nohup perl BLASTcov.pl Trinity.sphag.cdhit100.2.uniprot.blastx1e05 > Trinity.sphag.cdhit100.2.uniprot.blastx1e05.cov &
 nohup perl BLASTcov.pl Trinity.sphag.cdhit100.3.uniprot.blastx1e05 > Trinity.sphag.cdhit100.3.uniprot.blastx1e05.cov
 nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05.cov
 nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05.cov
 nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05.cov
 
+nohup blastx -query Trinity.Myr.fasta.cdhit100 -db PF00067_full_length_sequences.fasta -evalue 1e-05 -num_threads 8 -out Trinity.myr.PF00067.blastx1e05
+
 #after running BLASTcov (that calculates % of query and subject coverage in the blast hit) I've downloaded all 3 pieces of results for piper and concatenated them.
 cat 
+cat Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05.cov Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05.cov Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05.cov > Trinity.Trinity.Myr.cdhit100.all.uniprot.blastx1e05.cov
 
 #Now, I'm running a BLAST in one instance (i-b20687a4) with all piper trinity transcripts with a specific database made by JuAmerico.
 
 makeblastdb -in uniprot_sprot.fasta -dbtype prot
 nohup blastx -query Trinity.piper.fasta.cdhit100 -db PF00067_full_length_sequences.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.fasta.cdhit100.PF00067blastx1e05
+nohup perl BLASTcov.pl Trinity.piper.fasta.cdhit100.PF00067blastx1e05 > Trinity.piper.fasta.cdhit100.PF00067blastx1e05.cov
 #finally, localy I'll run with the bacterial db.
 blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_db_Bacterial_Limonene_Hydroxylase.fasta -o Trinity.piper.fasta.cdhit100.Bacterial_Limonene_Hydroxylase.blastx1e05 -e 1e-05 -m 8
+#running without m8
+blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_db_Bacterial_Limonene_Hydroxylase.fasta -o Trinity.piper.fasta.cdhit100.Bacterial_Limonene_Hydroxylase.blastx1e05 -e 1e-05 
+
+blastall -p blastx -i Trinity.sphag.fasta.cdhit100 -d /home/bioma/limonene/Protein_db_Bacterial_Limonene_Hydroxylase.fasta -e 1e-05 -o Trinity.sphag.fasta.cdhit100.Protein_Plant_Limonene_hydroxylases.blastp.1e05 &
