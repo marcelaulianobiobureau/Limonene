@@ -82,3 +82,12 @@ blastall -p blastx -i Trinity.sphag.fasta.cdhit100 -d /home/bioma/limonene/Prote
 blastall -p blastx -i Trinity.sphag.fasta.cdhit100 -d /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.fasta -e 1e-05 -o Trinity.sphag.fasta.cdhit100.Protein_PLANT_Limonene_hydroxylases.blastp.1e05 &
 blastall -p blastx -i Trinity.Myr.fasta.cdhit100 -d /home/bioma/limonene/Protein_db_Bacterial_Limonene_Hydroxylase.fasta -e 1e-05 -o Trinity.myr.fasta.cdhit100.Protein_bacterial_Limonene_hydroxylases.blastp.1e05 &
 blastall -p blastx -i Trinity.Myr.fasta.cdhit100 -d /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.fasta -e 1e-05 -o Trinity.myr.fasta.cdhit100.Protein_PLANT_Limonene_hydroxylases.blastp.1e05 &
+
+
+/PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.piper.fasta.cdhit100
+/PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.Myr.fasta.cdhit100
+/PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.sphag.fasta.cdhit100
+
+
+
+
