@@ -88,6 +88,6 @@ blastall -p blastx -i Trinity.Myr.fasta.cdhit100 -d /home/bioma/limonene/Protein
 /PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.Myr.fasta.cdhit100
 /PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.sphag.fasta.cdhit100
 
-
+nohup /home/bioma/scripts/hmmer-3.1b2/src/hmmsearch --tblout=piper.transdecodercomplete.Protein_Plant_Limonene_hydroxylases.hmm /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.hmm Trinity.piper.fasta.cdhit100.transdecoder.complete.pep.fa &
 
 
