@@ -90,4 +90,4 @@ blastall -p blastx -i Trinity.Myr.fasta.cdhit100 -d /home/bioma/limonene/Protein
 
 nohup /home/bioma/scripts/hmmer-3.1b2/src/hmmsearch --tblout=piper.transdecodercomplete.Protein_Plant_Limonene_hydroxylases.hmm /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.hmm Trinity.piper.fasta.cdhit100.transdecoder.complete.pep.fa &
 
-
+python /home/bioma/scripts/filterfasta.py -i Piper_IDs_com_Hits_PFAM.txt Trinity.piper.fasta.cdhit100 > Trinity.piper.cdhit100.IDsju.fa
