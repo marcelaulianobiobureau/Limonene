@@ -1,5 +1,0 @@
-13-10-2016
-
-Today, Raony and I spent a few hours to configure all the machines in the cloud. Now everyhting seems to be organized.
-
-The first thing is to import the reads for the three species to be analized from BaseSpace, to S3, and from S3 to the working machine.
