@@ -1,0 +1,93 @@
+#open the new machine
+
+sudo -s
+apt-get install s3cmd
+s3cmd --configure
+s3cmd get s3://bioinfobiobureau/input/Pipergaudichaudia_S45_L008_R*_001.fastq.gz
+s3cmd get s3://bioinfobiobureau/input/Myrceugeniamyrcio_S46_L008_R*_001.fastq.gz
+s3cmd get s3://bioinfobiobureau/input/Sphagneticolatrilo_S44_L008_R*_001.fastq.gz
+apt-get update
+apt-get install g++
+apt-get install make
+apt-get install zlib1g-dev
+apt-get install libncurses5-dev libncursesw5-dev
+wget https://github.com/trinityrnaseq/trinityrnaseq/releases
+cd trinityrnaseq-2.2.0
+make
+
+nohup /home/ubuntu/scripts/FastQC/./fastqc Myrceugeniamyrcio_S46_L008_R2_001.fastq.gz &
+nohup /home/ubuntu/scripts/FastQC/./fastqc Myrceugeniamyrcio_S46_L008_R1_001.fastq.gz &
+nohup /home/ubuntu/scripts/FastQC/./fastqc Sphagneticolatrilo_S44_L008_R2_001.fastq.gz &
+nohup /home/ubuntu/scripts/FastQC/./fastqc Sphagneticolatrilo_S44_L008_R1_001.fastq.gz &
+
+apt-get install bowtie
+
+nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Pipergaudichaudia_S45_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Pipergaudichaudia_S45_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_piper
+nohup cdhit-est -i Trinity.piper.fasta -o Trinity.piper.fasta.cdhit100 -c 1.0 -T 3
+blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_Plant_Limonene_hydroxylases.fasta -o Trinity.piper100.Protein_Plant_Limonene_hydroxylases.blastx1e05 -e 1e-05
+
+#I'm going to run blastx (with swissprot) in the output from cdhit splited in 3 files, in three different amazon instances for each species.
+#http://iubio.bio.indiana.edu/gmod/genogrid/scripts/split_multifasta.pl
+perl /home/bioma/scripts/split_multifasta.pl --input_file=Trinity.piper.fasta.cdhit100 --seqs_per_file=68978 --output_dir=.
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.piper.fasta.cdhit100.1 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.cdhit100.1.uniprot.blastx1e05
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.piper.fasta.cdhit100.2 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.cdhit100.2.uniprot.blastx1e05
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.piper.fasta.cdhit100.3 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.cdhit100.3.uniprot.blastx1e05
+
+nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Sphagneticolatrilo_S44_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Sphagneticolatrilo_S44_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_shpagneti/
+nohup cdhit-est -i Trinity.sphag.fasta -o Trinity.sphag.fasta.cdhit100 -c 1.0 -T 3
+
+perl /home/bioma/scripts/split_multifasta.pl --input_file=Trinity.sphag.fasta.cdhit100 --seqs_per_file=136201 --output_dir=.
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.sphag.fasta.cdhit100.1 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.sphag.cdhit100.1.uniprot.blastx1e05
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.sphag.fasta.cdhit100.2 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.sphag.cdhit100.2.uniprot.blastx1e05
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.sphag.fasta.cdhit100.3 -db uniprot_sprot.fasta -evalue 1e-05 -num_threads 8 -out Trinity.sphag.cdhit100.3.uniprot.blastx1e05
+
+nohup /home/ubuntu/trinityrnaseq-2.2.0/./Trinity --seqType fq --trimmomatic --SS_lib_type RF --CPU 6 --max_memory 30G --normalize_reads --normalize_by_read_set --left /home/ubuntu/rna-seq/Myrceugeniamyrcio_S46_L008_R1_001.fastq.gz --right /home/ubuntu/rna-seq/Myrceugeniamyrcio_S46_L008_R2_001.fastq.gz --output /home/ubuntu/rna-seq/trinity_Myrceu
+nohup cdhit-est -i Trinity.Myr.fasta -o Trinity.Myr.fasta.cdhit100 -c 1.0 -T 6
+
+nohup perl BLASTcov.pl Trinity.sphag.cdhit100.1.uniprot.blastx1e05 > Trinity.sphag.cdhit100.1.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.sphag.cdhit100.2.uniprot.blastx1e05 > Trinity.sphag.cdhit100.2.uniprot.blastx1e05.cov &
+nohup perl BLASTcov.pl Trinity.sphag.cdhit100.3.uniprot.blastx1e05 > Trinity.sphag.cdhit100.3.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05.cov
+nohup perl BLASTcov.pl Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05 > Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05.cov
+
+nohup blastx -query Trinity.Myr.fasta.cdhit100 -db PF00067_full_length_sequences.fasta -evalue 1e-05 -num_threads 8 -out Trinity.myr.PF00067.blastx1e05
+
+#after running BLASTcov (that calculates % of query and subject coverage in the blast hit) I've downloaded all 3 pieces of results for piper and concatenated them.
+cat Trinity.Trinity.Myr.cdhit100.1.uniprot.blastx1e05.cov Trinity.Trinity.Myr.cdhit100.2.uniprot.blastx1e05.cov Trinity.Trinity.Myr.cdhit100.3.uniprot.blastx1e05.cov > Trinity.Trinity.Myr.cdhit100.all.uniprot.blastx1e05.cov
+cat Trinity.sphag.cdhit100.3.uniprot.blastx1e05.cov Trinity.sphag.cdhit100.2.uniprot.blastx1e05.cov Trinity.sphag.cdhit100.1.uniprot.blastx1e05.cov > Trinity.sphag.cdhit100.all.uniprot.blastx1e05.cov
+#Now, I'm running a BLAST in one instance (i-b20687a4) with all piper trinity transcripts with a specific database made by JuAmerico.
+
+makeblastdb -in uniprot_sprot.fasta -dbtype prot
+nohup blastx -query Trinity.piper.fasta.cdhit100 -db PF00067_full_length_sequences.fasta -evalue 1e-05 -num_threads 8 -out Trinity.piper.fasta.cdhit100.PF00067blastx1e05
+nohup perl BLASTcov.pl Trinity.piper.fasta.cdhit100.PF00067blastx1e05 > Trinity.piper.fasta.cdhit100.PF00067blastx1e05.cov
+#finally, localy I'll run with the bacterial db.
+blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_db_Bacterial_Limonene_Hydroxylase.fasta -o Trinity.piper.fasta.cdhit100.Bacterial_Limonene_Hydroxylase.blastx1e05 -e 1e-05 -m 8
+#running without m8
+blastall -p blastx -i Trinity.piper.fasta.cdhit100 -d Protein_db_Bacterial_Limonene_Hydroxylase.fasta -o Trinity.piper.fasta.cdhit100.Bacterial_Limonene_Hydroxylase.blastx1e05 -e 1e-05 
+
+blastall -p blastx -i Trinity.sphag.fasta.cdhit100 -d /home/bioma/limonene/Protein_db_Bacterial_Limonene_Hydroxylase.fasta -e 1e-05 -o Trinity.sphag.fasta.cdhit100.Protein_Plant_Limonene_hydroxylases.blastp.1e05 &
+blastall -p blastx -i Trinity.sphag.fasta.cdhit100 -d /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.fasta -e 1e-05 -o Trinity.sphag.fasta.cdhit100.Protein_PLANT_Limonene_hydroxylases.blastp.1e05 &
+blastall -p blastx -i Trinity.Myr.fasta.cdhit100 -d /home/bioma/limonene/Protein_db_Bacterial_Limonene_Hydroxylase.fasta -e 1e-05 -o Trinity.myr.fasta.cdhit100.Protein_bacterial_Limonene_hydroxylases.blastp.1e05 &
+blastall -p blastx -i Trinity.Myr.fasta.cdhit100 -d /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.fasta -e 1e-05 -o Trinity.myr.fasta.cdhit100.Protein_PLANT_Limonene_hydroxylases.blastp.1e05 &
+
+
+/PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.piper.fasta.cdhit100
+/PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.Myr.fasta.cdhit100
+/PASApipeline-2.0.2/pasa-plugins/transdecoder/./transcripts_to_best_scoring_ORFs.pl -t Trinity.sphag.fasta.cdhit100
+
+nohup /home/bioma/scripts/hmmer-3.1b2/src/hmmsearch --tblout=piper.transdecodercomplete.Protein_Plant_Limonene_hydroxylases.hmm /home/bioma/limonene/Protein_Plant_Limonene_hydroxylases.hmm Trinity.piper.fasta.cdhit100.transdecoder.complete.pep.fa &
+
+python /home/bioma/scripts/filterfasta.py -i Piper_IDs_com_Hits_PFAM.txt Trinity.piper.fasta.cdhit100 > Trinity.piper.cdhit100.IDsju.fa
